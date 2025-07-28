@@ -37,6 +37,22 @@
             background-color: #4F46E5;
             color: #FFF;
         }
+        .hyper-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #A78BFA;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        .hyper-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #A78BFA;
+            cursor: pointer;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-200">
@@ -152,6 +168,44 @@
                             <option value="bayesian">Bayesian Optimization</option>
                         </select>
                     </div>
+                    
+                    <!-- Hyperparameter Controls -->
+                    <div id="hyperparameter-controls" class="glass-pane p-6 rounded-lg space-y-4">
+                        <!-- Hill Climbing -->
+                        <div id="hill-params" class="hidden space-y-3">
+                            <div>
+                                <label for="hill-step" class="flex justify-between text-sm font-medium text-gray-300"><span>Step Size</span><span id="hill-step-val">0.05</span></label>
+                                <input type="range" id="hill-step" min="0.01" max="0.2" step="0.01" value="0.05" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer hyper-slider">
+                            </div>
+                        </div>
+                        <!-- PSO -->
+                        <div id="pso-params" class="hidden space-y-3">
+                             <div>
+                                <label for="pso-particles" class="flex justify-between text-sm font-medium text-gray-300"><span>Particles</span><span id="pso-particles-val">20</span></label>
+                                <input type="range" id="pso-particles" min="5" max="50" step="1" value="20" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer hyper-slider">
+                            </div>
+                            <div>
+                                <label for="pso-inertia" class="flex justify-between text-sm font-medium text-gray-300"><span>Inertia (w)</span><span id="pso-inertia-val">0.5</span></label>
+                                <input type="range" id="pso-inertia" min="0.1" max="1.0" step="0.1" value="0.5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer hyper-slider">
+                            </div>
+                             <div>
+                                <label for="pso-cognitive" class="flex justify-between text-sm font-medium text-gray-300"><span>Cognitive (c1)</span><span id="pso-cognitive-val">1.5</span></label>
+                                <input type="range" id="pso-cognitive" min="0.1" max="3.0" step="0.1" value="1.5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer hyper-slider">
+                            </div>
+                             <div>
+                                <label for="pso-social" class="flex justify-between text-sm font-medium text-gray-300"><span>Social (c2)</span><span id="pso-social-val">1.5</span></label>
+                                <input type="range" id="pso-social" min="0.1" max="3.0" step="0.1" value="1.5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer hyper-slider">
+                            </div>
+                        </div>
+                        <!-- Bayesian -->
+                        <div id="bayesian-params" class="hidden space-y-3">
+                             <div>
+                                <label for="bayesian-kappa" class="flex justify-between text-sm font-medium text-gray-300"><span>Exploration (κ)</span><span id="bayesian-kappa-val">2.5</span></label>
+                                <input type="range" id="bayesian-kappa" min="0.1" max="10" step="0.1" value="2.5" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer hyper-slider">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="glass-pane p-6 rounded-lg">
                         <div class="flex justify-between items-center">
                             <div>
@@ -323,7 +377,7 @@ data = xr.Dataset(
     <!-- Footer -->
     <footer class="bg-gray-900 border-t border-gray-700 py-8">
         <div class="container mx-auto px-6 text-center text-gray-500">
-            <p>&copy; 2025 Matthew Reda. All rights reserved.</p>
+            <p>Budget Optimizer Framework</p>
         </div>
     </footer>
 
@@ -362,6 +416,17 @@ data = xr.Dataset(
             const evaluationsEl = document.getElementById('evaluations');
             const bestScoreEl = document.getElementById('bestScore');
             
+            // Hyperparameter elements
+            const hillParams = document.getElementById('hill-params');
+            const psoParams = document.getElementById('pso-params');
+            const bayesianParams = document.getElementById('bayesian-params');
+            const hillStepSlider = document.getElementById('hill-step');
+            const psoParticlesSlider = document.getElementById('pso-particles');
+            const psoInertiaSlider = document.getElementById('pso-inertia');
+            const psoCognitiveSlider = document.getElementById('pso-cognitive');
+            const psoSocialSlider = document.getElementById('pso-social');
+            const bayesianKappaSlider = document.getElementById('bayesian-kappa');
+
             let width, height;
             let animationFrameId;
             let running = false;
@@ -430,7 +495,7 @@ data = xr.Dataset(
                 if (algorithm === 'hill') {
                     algorithmState.currentPos = { x: Math.random(), y: Math.random() };
                 } else if (algorithm === 'pso') {
-                    const numParticles = 20;
+                    const numParticles = parseInt(psoParticlesSlider.value);
                     algorithmState.particles = Array.from({length: numParticles}, () => ({
                         pos: { x: Math.random(), y: Math.random() },
                         velocity: { x: (Math.random() - 0.5) * 0.1, y: (Math.random() - 0.5) * 0.1 },
@@ -473,7 +538,7 @@ data = xr.Dataset(
                 const currentScore = objectiveFunction(currentPos.x, currentPos.y);
                 let bestNeighborPos = { ...currentPos };
                 let bestNeighborScore = currentScore;
-                const stepSize = 0.05;
+                const stepSize = parseFloat(hillStepSlider.value);
 
                 for (let dx = -stepSize; dx <= stepSize; dx += stepSize) {
                     for (let dy = -stepSize; dy <= stepSize; dy += stepSize) {
@@ -493,7 +558,10 @@ data = xr.Dataset(
             }
 
             function particleSwarmStep() {
-                const w = 0.5, c1 = 1.5, c2 = 1.5;
+                const w = parseFloat(psoInertiaSlider.value);
+                const c1 = parseFloat(psoCognitiveSlider.value);
+                const c2 = parseFloat(psoSocialSlider.value);
+
                 for (const p of algorithmState.particles) {
                     const score = evaluate(p.pos.x, p.pos.y);
                     if (score > p.bestScore) { p.bestScore = score; p.bestPos = { ...p.pos }; }
@@ -510,7 +578,7 @@ data = xr.Dataset(
             }
 
             function bayesianStep() {
-                const kappa = 5.5;
+                const kappa = parseFloat(bayesianKappaSlider.value);
                 let bestNextPoint = {x: 0, y: 0};
                 let maxAcquisition = -Infinity;
                 const grid_size = 30;
@@ -585,10 +653,30 @@ data = xr.Dataset(
                 canvas.height = height;
                 drawLandscape();
             }
+            
+            function updateHyperparameterUI() {
+                const selected = algorithmSelect.value;
+                hillParams.classList.toggle('hidden', selected !== 'hill');
+                psoParams.classList.toggle('hidden', selected !== 'pso');
+                bayesianParams.classList.toggle('hidden', selected !== 'bayesian');
+            }
+            
+            // Event listeners for sliders
+            document.querySelectorAll('.hyper-slider').forEach(slider => {
+                const display = document.getElementById(`${slider.id}-val`);
+                if (display) {
+                    slider.addEventListener('input', () => {
+                        display.textContent = slider.value;
+                    });
+                }
+            });
 
+            algorithmSelect.addEventListener('change', updateHyperparameterUI);
             startBtn.addEventListener('click', () => { running ? stop() : start(); });
             window.addEventListener('resize', init);
+            
             init();
+            updateHyperparameterUI();
         });
 
         // --- Pareto Frontier Visualization ---
@@ -605,8 +693,8 @@ data = xr.Dataset(
                 { revenue: 80, awareness: 58, mix: { olv: 25, search: 20, social: 20, ooh: 20, display: 15 } },
                 { revenue: 70, awareness: 60, mix: { olv: 30, search: 15, social: 15, ooh: 25, display: 15 } },
             ];
-            const maxRevenue = 160;
-            const maxAwareness = 100;
+            const maxRevenue = 100;
+            const maxAwareness = 70;
             let hoveredPoint = null;
 
             function scaleX(revenue) { return (revenue / maxRevenue) * (paretoWidth - 80) + 60; }
@@ -636,7 +724,7 @@ data = xr.Dataset(
                 paretoCtx.fillText('Maximize Revenue ($M)', paretoWidth / 2 + 20, paretoHeight - 10);
 
                 // Ticks
-                for(let i = 0; i <= maxAwareness; i+= 20) {
+                for(let i = 0; i <= maxAwareness; i+= 10) {
                     paretoCtx.fillText(i, 45, scaleY(i) + 4);
                 }
                  for(let i = 0; i <= maxRevenue; i+= 20) {
@@ -669,7 +757,7 @@ data = xr.Dataset(
                 
                 const tooltipWidth = 160;
                 const tooltipHeight = 130;
-                const tooltipX = x + 15;
+                const tooltipX = x + 15 > paretoWidth - tooltipWidth ? x - 15 - tooltipWidth : x + 15;
                 const tooltipY = y - tooltipHeight / 2;
 
                 paretoCtx.fillStyle = 'rgba(17, 24, 39, 0.9)';
