@@ -510,7 +510,7 @@ data = xr.Dataset(
             }
 
             function bayesianStep() {
-                const kappa = 2.5;
+                const kappa = 5.5;
                 let bestNextPoint = {x: 0, y: 0};
                 let maxAcquisition = -Infinity;
                 const grid_size = 30;
@@ -599,14 +599,14 @@ data = xr.Dataset(
             let paretoWidth, paretoHeight;
 
             const paretoData = [
-                { revenue: 115, awareness: 80, mix: { olv: 10, search: 50, social: 25, ooh: 5, display: 10 } },
-                { revenue: 112, awareness: 88, mix: { olv: 15, search: 40, social: 25, ooh: 10, display: 10 } },
-                { revenue: 108, awareness: 94, mix: { olv: 20, search: 30, social: 25, ooh: 15, display: 10 } },
-                { revenue: 100, awareness: 98, mix: { olv: 25, search: 20, social: 20, ooh: 20, display: 15 } },
-                { revenue: 90, awareness: 100, mix: { olv: 30, search: 15, social: 15, ooh: 25, display: 15 } },
+                { revenue: 95, awareness: 40, mix: { olv: 10, search: 50, social: 25, ooh: 5, display: 10 } },
+                { revenue: 92, awareness: 48, mix: { olv: 15, search: 40, social: 25, ooh: 10, display: 10 } },
+                { revenue: 88, awareness: 54, mix: { olv: 20, search: 30, social: 25, ooh: 15, display: 10 } },
+                { revenue: 80, awareness: 58, mix: { olv: 25, search: 20, social: 20, ooh: 20, display: 15 } },
+                { revenue: 70, awareness: 60, mix: { olv: 30, search: 15, social: 15, ooh: 25, display: 15 } },
             ];
-            const maxRevenue = 120;
-            const maxAwareness = 110;
+            const maxRevenue = 160;
+            const maxAwareness = 100;
             let hoveredPoint = null;
 
             function scaleX(revenue) { return (revenue / maxRevenue) * (paretoWidth - 80) + 60; }
