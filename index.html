@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Optimizer Framework</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #4F46E5, #A78BFA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-pane {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .canvas-container {
+            aspect-ratio: 1 / 1;
+            max-width: 500px;
+            width: 100%;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #4F46E5;
+            color: #FFF;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <!-- Header -->
+    <header class="bg-gray-900/70 backdrop-blur-md sticky top-0 z-50 border-b border-gray-700">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold">
+                <span class="gradient-text">BudgetOptimizer</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#pillars" class="text-gray-400 hover:text-white">Core Pillars</a>
+                <a href="#architecture" class="text-gray-400 hover:text-white">Architecture</a>
+                <a href="#engine" class="text-gray-400 hover:text-white">Optimization Engine</a>
+                <a href="#deep-dive" class="text-gray-400 hover:text-white">Technical Deep Dive</a>
+                <a href="#timeline" class="text-gray-400 hover:text-white">Roadmap</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-200 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+             <a href="#pillars" class="block px-6 py-2 text-gray-400 hover:bg-gray-800">Core Pillars</a>
+             <a href="#architecture" class="block px-6 py-2 text-gray-400 hover:bg-gray-800">Architecture</a>
+             <a href="#engine" class="block px-6 py-2 text-gray-400 hover:bg-gray-800">Optimization Engine</a>
+             <a href="#deep-dive" class="block px-6 py-2 text-gray-400 hover:bg-gray-800">Technical Deep Dive</a>
+             <a href="#timeline" class="block px-6 py-2 text-gray-400 hover:bg-gray-800">Roadmap</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="py-24">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">A Composable Framework for Advanced Budget Optimization</h1>
+            <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-3xl mx-auto">Engineer superior returns with a system designed for flexibility, scalability, and seamless integration of any predictive model.</p>
+            <a href="#architecture" class="bg-indigo-600 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-indigo-700 transition">Explore the Architecture</a>
+        </div>
+    </section>
+
+    <!-- Core Pillars -->
+    <section id="pillars" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">Core Pillars of the Framework</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-pane p-8 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-2">1. Model Abstraction Layer</h3>
+                    <p class="text-gray-400">A universal `AbstractModel` protocol decouples optimization logic from model implementation. Integrate any model—from legacy spreadsheets to cloud-native ML services—without refactoring.</p>
+                </div>
+                <div class="glass-pane p-8 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-2">2. Standardized Data Structures</h3>
+                    <p class="text-gray-400">Leverages Xarray to handle complex, multi-dimensional data (time, geography, channel, product), ensuring consistency, alignment, and validation across the entire system.</p>
+                </div>
+                <div class="glass-pane p-8 rounded-lg">
+                    <h3 class="text-xl font-semibold text-white mb-2">3. Pluggable Optimization Solvers</h3>
+                    <p class="text-gray-400">Choose the right tool for the job. The framework supports a variety of solvers, from deterministic methods like SciPy to advanced stochastic and gradient-free options like Optuna and Nevergrad.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Overview -->
+    <section id="architecture" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">Architecture Overview</h2>
+            <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
+                <pre class="font-mono text-sm text-gray-300 overflow-x-auto">
+  +-----------------------+      +--------------------------+      +-------------------------+
+  |    Input Sources      |      |   Data Standardization   |      |      Model Layer        |
+  | (Budgets, KPIs, etc.) |----->| (Xarray Datasets)        |----->| (AbstractModel Protocol)|
+  +-----------------------+      +--------------------------+      +-------------------------+
+             |                                                             |
+             |                                                             |  +---------------------+
+             |                                                             +--| BlackBox Wrappers   |
+             |                                                             |  | (ML, APIs, Legacy)  |
+             |                                                             |  +---------------------+
+             |                                                             |
+             |                                                             |  +---------------------+
+             |                                                             +--| Native Models       |
+             |                                                                +---------------------+
+             |
+             |
+  +-----------------------+      +--------------------------+      +-------------------------+
+  |  Optimization Results |<-----|    Optimization Layer    |<-----|    Loss Function Layer  |
+  | (Reports, Dashboards) |      | (Scipy, Optuna, etc.)    |      | (Multi-KPI, Constraints)|
+  +-----------------------+      +--------------------------+      +-------------------------+
+                </pre>
+                <p class="mt-6 text-gray-400 text-center">This modular design ensures that each component can be developed, tested, and scaled independently, providing maximum flexibility and robustness.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optimization Engine -->
+    <section id="engine" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">The Optimization Engine in Action</h2>
+             <div class="flex flex-col lg:flex-row gap-8 items-center justify-center">
+                <!-- Interactive Visualization -->
+                <div class="w-full lg:w-1/2 flex justify-center">
+                    <div class="canvas-container bg-gray-800 rounded-lg shadow-inner border border-gray-700">
+                        <canvas id="optimizationCanvas"></canvas>
+                    </div>
+                </div>
+                <!-- Controls -->
+                <div class="w-full lg:w-1/3 space-y-4">
+                    <div class="glass-pane p-6 rounded-lg">
+                        <label for="algorithm" class="block text-sm font-medium text-gray-300">Search Algorithm</label>
+                        <select id="algorithm" class="mt-1 block w-full pl-3 pr-10 py-2 text-base bg-gray-700 border-gray-600 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="random">Random Search</option>
+                            <option value="hill">Hill Climbing</option>
+                            <option value="pso">Particle Swarm</option>
+                            <option value="bayesian">Bayesian Optimization</option>
+                        </select>
+                    </div>
+                    <div class="glass-pane p-6 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-400">Evaluations</p>
+                                <p id="evaluations" class="text-2xl font-bold gradient-text">0</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Max ROI Found</p>
+                                <p id="bestScore" class="text-2xl font-bold gradient-text">0.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="startBtn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition">Start Simulation</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Deep Dive -->
+    <section id="deep-dive" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">Technical Deep Dive</h2>
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-4 flex justify-center border-b border-gray-700">
+                    <button class="tab-button active py-2 px-4" data-tab="tab1">Model Agnosticism</button>
+                    <button class="tab-button py-2 px-4 text-gray-400" data-tab="tab2">Data Handling</button>
+                    <button class="tab-button py-2 px-4 text-gray-400" data-tab="tab3">Multi-KPI Optimization</button>
+                </div>
+                <div id="tab-content" class="glass-pane p-8 rounded-lg">
+                    <div id="tab1" class="tab-pane">
+                        <h3 class="text-xl font-semibold text-white mb-4">The `AbstractModel` Protocol</h3>
+                        <p class="text-gray-400 mb-4">Any object that conforms to our `AbstractModel` protocol can be plugged into the optimizer. This is achieved by defining a clear contract for prediction and contribution analysis, enforced through an abstract base class.</p>
+                        <pre class="font-mono text-sm bg-gray-900 p-4 rounded-md overflow-x-auto"><code class="language-python">
+from abc import ABC, abstractmethod
+import xarray as xr
+
+class AbstractModel(ABC):
+    @abstractmethod
+    def predict(self, x: xr.Dataset) -> xr.DataArray:
+        """Return predictions as an xarray DataArray."""
+        pass
+
+    @abstractmethod
+    def contributions(self, x: xr.Dataset) -> xr.Dataset:
+        """Return feature contributions as an xarray Dataset."""
+        pass
+
+# Example: Wrapping a scikit-learn model
+class SklearnModelWrapper(AbstractModel):
+    def __init__(self, model, feature_columns):
+        self.model = model
+        self.feature_columns = feature_columns
+
+    def predict(self, x: xr.Dataset) -> xr.DataArray:
+        # 1. Convert xarray.Dataset to pandas.DataFrame
+        # 2. Run self.model.predict()
+        # 3. Convert prediction back to xarray.DataArray
+        ...
+                        </code></pre>
+                    </div>
+                    <div id="tab2" class="tab-pane hidden">
+                        <h3 class="text-xl font-semibold text-white mb-4">Multi-dimensional Data with Xarray</h3>
+                        <p class="text-gray-400 mb-4">We standardize all inputs into Xarray Datasets. This allows us to handle complex, labeled, multi-dimensional arrays, which is crucial for real-world marketing data that varies over time, geography, and product lines.</p>
+                        <pre class="font-mono text-sm bg-gray-900 p-4 rounded-md overflow-x-auto"><code class="language-python">
+import xarray as xr
+import pandas as pd
+
+# Example multi-dimensional dataset
+data = xr.Dataset(
+    {
+        'spend_tv': (['time', 'geography'], tv_spend_data),
+        'spend_digital': (['time', 'geography'], digital_spend_data),
+        'competitor_spend': (['time', 'geography'], competitor_data),
+    },
+    coords={
+        'time': pd.date_range('2023-01-01', periods=104, freq='W'),
+        'geography': ['US_West', 'US_East', 'EU_Central'],
+    },
+    attrs={'currency': 'USD', 'version': '1.3'}
+)
+                        </code></pre>
+                    </div>
+                    <div id="tab3" class="tab-pane hidden">
+                        <div class="flex flex-col lg:flex-row gap-8 items-center">
+                            <div class="lg:w-1/2">
+                                <h3 class="text-xl font-semibold text-white mb-4">Pareto Frontier Analysis</h3>
+                                <p class="text-gray-400 mb-4">For multi-objective problems, we generate a Pareto frontier—a set of optimal solutions where no objective can be improved without sacrificing another. This empowers executives to make informed trade-off decisions by visualizing the exact compromises between competing KPIs.</p>
+                                <p class="text-gray-400 mb-4">Hover over the points on the chart to see the specific media mix and KPI outcomes for each optimal allocation.</p>
+                            </div>
+                            <div class="lg:w-1/2 w-full">
+                                <div id="paretoContainer" class="w-full aspect-square bg-gray-800 rounded-lg p-4 border border-gray-700">
+                                    <canvas id="paretoCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Timeline -->
+    <section id="timeline" class="py-20">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-12">16-Week Implementation Roadmap</h2>
+            <div class="relative">
+                <div class="border-l-4 border-indigo-500 absolute h-full left-4 md:left-1/2 md:-translate-x-1/2"></div>
+                
+                <!-- Phase 1 -->
+                <div class="mb-12 pl-12 md:pl-0 flex md:justify-end md:pr-8">
+                    <div class="md:w-1/2">
+                        <div class="glass-pane p-6 rounded-lg">
+                            <p class="text-indigo-400 font-semibold">Phase 1 (Weeks 1-4)</p>
+                            <h3 class="text-xl font-bold text-white mt-1">Core Framework & Protocols</h3>
+                            <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+                                <li>Finalize `AbstractModel` & `BaseBudgetModel`</li>
+                                <li>Develop BlackBox wrapper architecture</li>
+                                <li>Establish CI/CD and testing infrastructure</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Phase 2 -->
+                <div class="mb-12 pl-12 md:pl-0 flex">
+                    <div class="md:w-1/2 md:text-right md:pr-8">
+                         <div class="glass-pane p-6 rounded-lg text-left">
+                            <p class="text-indigo-400 font-semibold">Phase 2 (Weeks 5-8)</p>
+                            <h3 class="text-xl font-bold text-white mt-1">Data Layer & Integration</h3>
+                            <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+                                <li>Implement Xarray data standards & validation</li>
+                                <li>Build budget-to-data transformation pipelines</li>
+                                <li>Integrate first set of legacy & API models</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Phase 3 -->
+                <div class="mb-12 pl-12 md:pl-0 flex md:justify-end md:pr-8">
+                    <div class="md:w-1/2">
+                         <div class="glass-pane p-6 rounded-lg">
+                            <p class="text-indigo-400 font-semibold">Phase 3 (Weeks 9-12)</p>
+                            <h3 class="text-xl font-bold text-white mt-1">Advanced Optimization</h3>
+                             <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+                                <li>Deploy Multi-KPI & Pareto optimization</li>
+                                <li>Implement hierarchical constraint system</li>
+                                <li>Integrate advanced solvers (e.g., Nevergrad)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                 <!-- Phase 4 -->
+                <div class="mb-12 pl-12 md:pl-0 flex">
+                    <div class="md:w-1/2 md:text-right md:pr-8">
+                         <div class="glass-pane p-6 rounded-lg text-left">
+                            <p class="text-indigo-400 font-semibold">Phase 4 (Weeks 13-16)</p>
+                            <h3 class="text-xl font-bold text-white mt-1">Productionization & Enterprise Features</h3>
+                             <ul class="list-disc list-inside text-gray-400 mt-2 space-y-1">
+                                <li>Develop interactive visualization dashboard</li>
+                                <li>Performance tuning & parallel execution</li>
+                                <li>Build reporting and export capabilities</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-700 py-8">
+        <div class="container mx-auto px-6 text-center text-gray-500">
+            <p>&copy; 2025 BudgetOptimizer Framework. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Tabs ---
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active', 'text-white'));
+                button.classList.add('active', 'text-white');
+                tabPanes.forEach(pane => {
+                    if (pane.id === button.dataset.tab) {
+                        pane.classList.remove('hidden');
+                    } else {
+                        pane.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // --- Optimization Visualization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('optimizationCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const algorithmSelect = document.getElementById('algorithm');
+            const startBtn = document.getElementById('startBtn');
+            const evaluationsEl = document.getElementById('evaluations');
+            const bestScoreEl = document.getElementById('bestScore');
+            
+            let width, height;
+            let animationFrameId;
+            let running = false;
+            let evaluations = 0;
+            let bestScore = -Infinity;
+            let bestPosition = { x: 0, y: 0 };
+            let algorithmState = {};
+
+            const peaks = [
+                { x: 0.3, y: 0.3, h: 0.8, w: 0.2 },
+                { x: 0.75, y: 0.65, h: 1.0, w: 0.25 },
+                { x: 0.6, y: 0.2, h: 0.6, w: 0.15 }
+            ];
+
+            function objectiveFunction(x, y) {
+                let value = 0;
+                for (const peak of peaks) {
+                    value += peak.h * Math.exp(-((x - peak.x)**2 + (y - peak.y)**2) / (2 * peak.w**2));
+                }
+                return value;
+            }
+
+            function drawLandscape() {
+                const resolution = 2;
+                for (let i = 0; i < width; i += resolution) {
+                    for (let j = 0; j < height; j += resolution) {
+                        const value = objectiveFunction(i / width, j / height);
+                        const r = 40 + 150 * value;
+                        const g = 50 + 150 * value;
+                        const b = 100 + 155 * value;
+                        ctx.fillStyle = `rgb(${Math.floor(r)}, ${Math.floor(g)}, ${Math.floor(b)})`;
+                        ctx.fillRect(i, j, resolution, resolution);
+                    }
+                }
+            }
+            
+            function drawPoint(x, y, color, radius = 5) {
+                ctx.beginPath();
+                ctx.arc(x * width, y * height, radius, 0, 2 * Math.PI);
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+            
+            function drawBestPoint() {
+                 if (bestScore > -Infinity) {
+                    ctx.beginPath();
+                    ctx.arc(bestPosition.x * width, bestPosition.y * height, 8, 0, 2 * Math.PI);
+                    ctx.strokeStyle = '#A78BFA';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    ctx.fillStyle = 'rgba(167, 139, 250, 0.3)';
+                    ctx.fill();
+                 }
+            }
+
+            function resetState() {
+                evaluations = 0;
+                bestScore = -Infinity;
+                bestPosition = { x: 0, y: 0 };
+                evaluationsEl.textContent = '0';
+                bestScoreEl.textContent = '0.00';
+                
+                const algorithm = algorithmSelect.value;
+                algorithmState = {};
+
+                if (algorithm === 'hill') {
+                    algorithmState.currentPos = { x: Math.random(), y: Math.random() };
+                } else if (algorithm === 'pso') {
+                    const numParticles = 20;
+                    algorithmState.particles = Array.from({length: numParticles}, () => ({
+                        pos: { x: Math.random(), y: Math.random() },
+                        velocity: { x: (Math.random() - 0.5) * 0.1, y: (Math.random() - 0.5) * 0.1 },
+                        bestPos: { x: 0, y: 0 },
+                        bestScore: -Infinity
+                    }));
+                    algorithmState.swarmBestPos = { x: 0, y: 0 };
+                    algorithmState.swarmBestScore = -Infinity;
+                } else if (algorithm === 'bayesian') {
+                    algorithmState.observedPoints = [];
+                    for(let i=0; i<5; i++) {
+                        const p = {x: Math.random(), y: Math.random()};
+                        evaluate(p.x, p.y);
+                        algorithmState.observedPoints.push(p);
+                    }
+                }
+            }
+
+            function evaluate(x, y) {
+                evaluations++;
+                const score = objectiveFunction(x, y);
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestPosition = { x, y };
+                    bestScoreEl.textContent = bestScore.toFixed(2);
+                }
+                evaluationsEl.textContent = evaluations;
+                return score;
+            }
+
+            function randomSearchStep() {
+                const x = Math.random();
+                const y = Math.random();
+                evaluate(x, y);
+                drawPoint(x, y, 'rgba(255, 255, 255, 0.7)');
+            }
+
+            function hillClimbingStep() {
+                const currentPos = algorithmState.currentPos;
+                const currentScore = objectiveFunction(currentPos.x, currentPos.y);
+                let bestNeighborPos = { ...currentPos };
+                let bestNeighborScore = currentScore;
+                const stepSize = 0.05;
+
+                for (let dx = -stepSize; dx <= stepSize; dx += stepSize) {
+                    for (let dy = -stepSize; dy <= stepSize; dy += stepSize) {
+                        if (dx === 0 && dy === 0) continue;
+                        const nx = Math.max(0, Math.min(1, currentPos.x + dx));
+                        const ny = Math.max(0, Math.min(1, currentPos.y + dy));
+                        const neighborScore = evaluate(nx, ny);
+                        if (neighborScore > bestNeighborScore) {
+                            bestNeighborScore = neighborScore;
+                            bestNeighborPos = { x: nx, y: ny };
+                        }
+                    }
+                }
+                drawPoint(currentPos.x, currentPos.y, 'rgba(0,0,0,0.2)');
+                algorithmState.currentPos = bestNeighborPos;
+                drawPoint(algorithmState.currentPos.x, algorithmState.currentPos.y, '#ffffff', 7);
+            }
+
+            function particleSwarmStep() {
+                const w = 0.5, c1 = 1.5, c2 = 1.5;
+                for (const p of algorithmState.particles) {
+                    const score = evaluate(p.pos.x, p.pos.y);
+                    if (score > p.bestScore) { p.bestScore = score; p.bestPos = { ...p.pos }; }
+                    if (score > algorithmState.swarmBestScore) { algorithmState.swarmBestScore = score; algorithmState.swarmBestPos = { ...p.pos }; }
+                }
+                for (const p of algorithmState.particles) {
+                    const r1 = Math.random(), r2 = Math.random();
+                    p.velocity.x = w * p.velocity.x + c1 * r1 * (p.bestPos.x - p.pos.x) + c2 * r2 * (algorithmState.swarmBestPos.x - p.pos.x);
+                    p.velocity.y = w * p.velocity.y + c1 * r1 * (p.bestPos.y - p.pos.y) + c2 * r2 * (algorithmState.swarmBestPos.y - p.pos.y);
+                    p.pos.x = Math.max(0, Math.min(1, p.pos.x + p.velocity.x));
+                    p.pos.y = Math.max(0, Math.min(1, p.pos.y + p.velocity.y));
+                    drawPoint(p.pos.x, p.pos.y, 'rgba(255, 255, 255, 0.8)', 4);
+                }
+            }
+
+            function bayesianStep() {
+                const kappa = 2.5;
+                let bestNextPoint = {x: 0, y: 0};
+                let maxAcquisition = -Infinity;
+                const grid_size = 30;
+                for (let i = 0; i < grid_size; i++) {
+                    for (let j = 0; j < grid_size; j++) {
+                        const candidate = { x: i / grid_size, y: j / grid_size };
+                        let minDistSq = Infinity;
+                        for(const p of algorithmState.observedPoints) {
+                            const distSq = (p.x - candidate.x)**2 + (p.y - candidate.y)**2;
+                            if(distSq < minDistSq) minDistSq = distSq;
+                        }
+                        const mu_surrogate = objectiveFunction(candidate.x, candidate.y);
+                        const sigma_surrogate = Math.sqrt(minDistSq);
+                        const acquisition = mu_surrogate + kappa * sigma_surrogate;
+                        if (acquisition > maxAcquisition) {
+                            maxAcquisition = acquisition;
+                            bestNextPoint = candidate;
+                        }
+                    }
+                }
+                evaluate(bestNextPoint.x, bestNextPoint.y);
+                algorithmState.observedPoints.push(bestNextPoint);
+
+                ctx.clearRect(0,0,width,height);
+                drawLandscape();
+                algorithmState.observedPoints.forEach(p => {
+                    drawPoint(p.x, p.y, 'rgba(255, 255, 255, 0.5)', 3);
+                });
+            }
+
+            function loop() {
+                if (!running) return;
+                const algorithm = algorithmSelect.value;
+                const speed = (algorithm === 'bayesian') ? 1 : 5;
+                for(let i = 0; i < speed; i++) {
+                    if (algorithm === 'random') randomSearchStep();
+                    else if (algorithm === 'hill') hillClimbingStep();
+                    else if (algorithm === 'pso') particleSwarmStep();
+                    else if (algorithm === 'bayesian') bayesianStep();
+                }
+                drawBestPoint();
+                if (evaluations < 5000) {
+                    animationFrameId = requestAnimationFrame(loop);
+                } else {
+                    stop();
+                }
+            }
+            
+            function start() {
+                if (running) return;
+                running = true;
+                startBtn.textContent = 'Stop Simulation';
+                algorithmSelect.disabled = true;
+                resetState();
+                ctx.clearRect(0,0,width,height);
+                drawLandscape();
+                loop();
+            }
+
+            function stop() {
+                running = false;
+                startBtn.textContent = 'Start/Reset Simulation';
+                algorithmSelect.disabled = false;
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            }
+
+            function init() {
+                const container = canvas.parentElement;
+                width = container.clientWidth;
+                height = container.clientHeight;
+                canvas.width = width;
+                canvas.height = height;
+                drawLandscape();
+            }
+
+            startBtn.addEventListener('click', () => { running ? stop() : start(); });
+            window.addEventListener('resize', init);
+            init();
+        });
+
+        // --- Pareto Frontier Visualization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const paretoCanvas = document.getElementById('paretoCanvas');
+            if (!paretoCanvas) return;
+            const paretoCtx = paretoCanvas.getContext('2d');
+            let paretoWidth, paretoHeight;
+
+            const paretoData = [
+                { revenue: 115, awareness: 80, mix: { olv: 10, search: 50, social: 25, ooh: 5, display: 10 } },
+                { revenue: 112, awareness: 88, mix: { olv: 15, search: 40, social: 25, ooh: 10, display: 10 } },
+                { revenue: 108, awareness: 94, mix: { olv: 20, search: 30, social: 25, ooh: 15, display: 10 } },
+                { revenue: 100, awareness: 98, mix: { olv: 25, search: 20, social: 20, ooh: 20, display: 15 } },
+                { revenue: 90, awareness: 100, mix: { olv: 30, search: 15, social: 15, ooh: 25, display: 15 } },
+            ];
+            const maxRevenue = 120;
+            const maxAwareness = 110;
+            let hoveredPoint = null;
+
+            function scaleX(revenue) { return (revenue / maxRevenue) * (paretoWidth - 80) + 60; }
+            function scaleY(awareness) { return paretoHeight - ((awareness / maxAwareness) * (paretoHeight - 60) + 40); }
+
+            function drawParetoAxes() {
+                paretoCtx.clearRect(0, 0, paretoWidth, paretoHeight);
+                paretoCtx.strokeStyle = '#4B5563';
+                paretoCtx.fillStyle = '#9CA3AF';
+                paretoCtx.font = '12px Inter';
+                
+                // Y Axis (Awareness)
+                paretoCtx.beginPath();
+                paretoCtx.moveTo(60, 20);
+                paretoCtx.lineTo(60, paretoHeight - 40);
+                paretoCtx.lineTo(paretoWidth - 20, paretoHeight - 40);
+                paretoCtx.stroke();
+                paretoCtx.save();
+                paretoCtx.translate(20, paretoHeight / 2);
+                paretoCtx.rotate(-Math.PI / 2);
+                paretoCtx.textAlign = 'center';
+                paretoCtx.fillText('Maximize Awareness (Score)', 0, 0);
+                paretoCtx.restore();
+
+                // X Axis (Revenue)
+                paretoCtx.textAlign = 'center';
+                paretoCtx.fillText('Maximize Revenue ($M)', paretoWidth / 2 + 20, paretoHeight - 10);
+
+                // Ticks
+                for(let i = 0; i <= maxAwareness; i+= 20) {
+                    paretoCtx.fillText(i, 45, scaleY(i) + 4);
+                }
+                 for(let i = 0; i <= maxRevenue; i+= 20) {
+                    paretoCtx.fillText(i, scaleX(i), paretoHeight - 25);
+                }
+            }
+
+            function drawParetoData() {
+                paretoCtx.beginPath();
+                paretoCtx.moveTo(scaleX(paretoData[0].revenue), scaleY(paretoData[0].awareness));
+                for (const point of paretoData) {
+                    paretoCtx.lineTo(scaleX(point.revenue), scaleY(point.awareness));
+                }
+                paretoCtx.strokeStyle = 'rgba(79, 70, 229, 0.5)';
+                paretoCtx.lineWidth = 2;
+                paretoCtx.stroke();
+
+                for (const point of paretoData) {
+                    paretoCtx.beginPath();
+                    paretoCtx.arc(scaleX(point.revenue), scaleY(point.awareness), 5, 0, 2 * Math.PI);
+                    paretoCtx.fillStyle = '#4F46E5';
+                    paretoCtx.fill();
+                }
+            }
+            
+            function drawParetoTooltip() {
+                if (!hoveredPoint) return;
+                const x = scaleX(hoveredPoint.revenue);
+                const y = scaleY(hoveredPoint.awareness);
+                
+                const tooltipWidth = 160;
+                const tooltipHeight = 130;
+                const tooltipX = x + 15;
+                const tooltipY = y - tooltipHeight / 2;
+
+                paretoCtx.fillStyle = 'rgba(17, 24, 39, 0.9)';
+                paretoCtx.strokeStyle = '#A78BFA';
+                paretoCtx.lineWidth = 1;
+                paretoCtx.beginPath();
+                paretoCtx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, [5]);
+                paretoCtx.fill();
+                paretoCtx.stroke();
+
+                paretoCtx.fillStyle = '#E5E7EB';
+                paretoCtx.font = 'bold 12px Inter';
+                paretoCtx.textAlign = 'left';
+                paretoCtx.fillText(`Revenue: $${hoveredPoint.revenue}M`, tooltipX + 10, tooltipY + 20);
+                paretoCtx.fillText(`Awareness: ${hoveredPoint.awareness}`, tooltipX + 10, tooltipY + 38);
+                
+                paretoCtx.strokeStyle = '#4B5563';
+                paretoCtx.beginPath();
+                paretoCtx.moveTo(tooltipX + 10, tooltipY + 48);
+                paretoCtx.lineTo(tooltipX + tooltipWidth - 10, tooltipY + 48);
+                paretoCtx.stroke();
+
+                paretoCtx.font = '11px Inter';
+                let mixY = tooltipY + 65;
+                for (const [channel, percent] of Object.entries(hoveredPoint.mix)) {
+                    paretoCtx.fillText(`${channel.toUpperCase()}: ${percent}%`, tooltipX + 10, mixY);
+                    mixY += 15;
+                }
+            }
+
+            function handleParetoMouseMove(event) {
+                const rect = paretoCanvas.getBoundingClientRect();
+                const mouseX = event.clientX - rect.left;
+                const mouseY = event.clientY - rect.top;
+                let foundPoint = null;
+
+                for (const point of paretoData) {
+                    const pointX = scaleX(point.revenue);
+                    const pointY = scaleY(point.awareness);
+                    const distance = Math.sqrt((mouseX - pointX)**2 + (mouseY - pointY)**2);
+                    if (distance < 10) {
+                        foundPoint = point;
+                        break;
+                    }
+                }
+                if (foundPoint !== hoveredPoint) {
+                    hoveredPoint = foundPoint;
+                    drawPareto();
+                }
+            }
+            
+            function drawPareto() {
+                drawParetoAxes();
+                drawParetoData();
+                drawParetoTooltip();
+            }
+
+            function initPareto() {
+                const container = paretoCanvas.parentElement;
+                paretoWidth = container.clientWidth;
+                paretoHeight = container.clientHeight;
+                paretoCanvas.width = paretoWidth;
+                paretoCanvas.height = paretoHeight;
+                drawPareto();
+            }
+
+            paretoCanvas.addEventListener('mousemove', handleParetoMouseMove);
+            window.addEventListener('resize', initPareto);
+            
+            const tabButton = document.querySelector('button[data-tab="tab3"]');
+            if (tabButton) {
+                 new MutationObserver((mutations, observer) => {
+                    if(document.getElementById('tab3').classList.contains('hidden') === false) {
+                        initPareto();
+                        observer.disconnect();
+                    }
+                }).observe(document.getElementById('tab3'), { attributes: true });
+            } else {
+                initPareto();
+            }
+        });
+    </script>
+</body>
+</html>
