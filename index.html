@@ -579,26 +579,25 @@ data = xr.Dataset(
 
             function bayesianStep() {
                 const kappa = parseFloat(bayesianKappaSlider.value);
-                let bestNextPoint = {x: 0, y: 0};
+                let bestNextPoint = {x: Math.random(), y: Math.random()};
                 let maxAcquisition = -Infinity;
-                const grid_size = 30;
-                for (let i = 0; i < grid_size; i++) {
-                    for (let j = 0; j < grid_size; j++) {
-                        const candidate = { x: i / grid_size, y: j / grid_size };
-                        let minDistSq = Infinity;
-                        for(const p of algorithmState.observedPoints) {
-                            const distSq = (p.x - candidate.x)**2 + (p.y - candidate.y)**2;
-                            if(distSq < minDistSq) minDistSq = distSq;
-                        }
-                        const mu_surrogate = objectiveFunction(candidate.x, candidate.y);
-                        const sigma_surrogate = Math.sqrt(minDistSq);
-                        const acquisition = mu_surrogate + kappa * sigma_surrogate;
-                        if (acquisition > maxAcquisition) {
-                            maxAcquisition = acquisition;
-                            bestNextPoint = candidate;
-                        }
+                const samples = 10;
+                for (let i = 0; i < samples; i++) {
+                    const candidate = { x: Math.random(), y: Math.random() };
+                    let minDistSq = Infinity;
+                    for(const p of algorithmState.observedPoints) {
+                        const distSq = (p.x - candidate.x)**2 + (p.y - candidate.y)**2;
+                        if(distSq < minDistSq) minDistSq = distSq;
+                    }
+                    const mu_surrogate = objectiveFunction(candidate.x, candidate.y);
+                    const sigma_surrogate = Math.sqrt(minDistSq);
+                    const acquisition = mu_surrogate + kappa * sigma_surrogate;
+                    if (acquisition > maxAcquisition) {
+                        maxAcquisition = acquisition;
+                        bestNextPoint = candidate;
                     }
                 }
+                
                 evaluate(bestNextPoint.x, bestNextPoint.y);
                 algorithmState.observedPoints.push(bestNextPoint);
 
