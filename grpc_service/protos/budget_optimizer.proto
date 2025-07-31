@@ -1,0 +1,276 @@
+// Protocol Buffer definitions for Budget Optimizer gRPC service
+
+syntax = "proto3";
+
+package budget_optimizer.v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+// =============================================================================
+// Core Data Models
+// =============================================================================
+
+// Units for budget values
+enum Unit {
+  UNIT_UNSPECIFIED = 0;
+  THOUSAND = 1;  // $K
+  MILLION = 2;   // $MM
+}
+
+// Channel budget configuration
+message ChannelBudget {
+  Unit unit = 1;
+  double initial_budget = 2;
+  double lower_bound = 3;
+  double upper_bound = 4;
+}
+
+// Budget allocation for prediction
+message Budget {
+  double olv = 1;
+  double paid_search = 2;
+  double print = 3;
+  double radio = 4;
+}
+
+// Budget scenario configuration
+message BudgetScenario {
+  string name = 1;
+  ChannelBudget olv = 2;
+  ChannelBudget paid_search = 3;
+  ChannelBudget print = 4;
+  ChannelBudget radio = 5;
+  ChannelBudget total_budget = 6;
+  int32 timeout = 7;     // seconds
+  int32 n_trials = 8;    // max number of optimization trials
+}
+
+// =============================================================================
+// Optimization Results
+// =============================================================================
+
+// Individual optimization trial
+message Trial {
+  int32 trial_id = 1;
+  map<string, double> budget = 2;
+  repeated double values = 3;  // KPI values (revenue, etc.)
+  bool completed = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Struct user_attrs = 6;  // Additional trial metadata
+}
+
+// Study containing multiple trials
+message Study {
+  string name = 1;
+  repeated Trial trials = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp last_updated = 4;
+  string status = 5;  // running, completed, failed
+}
+
+// Best trial result
+message BestTrial {
+  Trial trial = 1;
+  double objective_value = 2;
+  int32 total_trials = 3;
+}
+
+// Study settings and configuration
+message StudySettings {
+  BudgetScenario scenario = 1;
+  repeated ChannelSetting channel_settings = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+message ChannelSetting {
+  string channel = 1;
+  double initial_budget = 2;
+  double lower_bound = 3;
+  double upper_bound = 4;
+}
+
+// =============================================================================
+// Request/Response Messages
+// =============================================================================
+
+// Create budget scenario
+message CreateBudgetScenarioRequest {
+  BudgetScenario scenario = 1;
+}
+
+message CreateBudgetScenarioResponse {
+  string message = 1;
+  string scenario_name = 2;
+  bool success = 3;
+  string error = 4;
+}
+
+// List budget scenarios
+message ListBudgetScenariosRequest {
+  // Empty - lists all scenarios
+}
+
+message ListBudgetScenariosResponse {
+  repeated string scenario_names = 1;
+}
+
+// Get specific budget scenario
+message GetBudgetScenarioRequest {
+  string name = 1;
+}
+
+message GetBudgetScenarioResponse {
+  Study study = 1;
+  bool found = 2;
+  string error = 3;
+}
+
+// Get scenario settings
+message GetScenarioSettingsRequest {
+  string name = 1;
+}
+
+message GetScenarioSettingsResponse {
+  StudySettings settings = 1;
+  bool found = 2;
+  string error = 3;
+}
+
+// Get best trial
+message GetBestTrialRequest {
+  string name = 1;
+}
+
+message GetBestTrialResponse {
+  BestTrial best_trial = 1;
+  bool found = 2;
+  string error = 3;
+}
+
+// Delete scenario
+message DeleteBudgetScenarioRequest {
+  string name = 1;
+}
+
+message DeleteBudgetScenarioResponse {
+  string message = 1;
+  bool success = 2;
+  string error = 3;
+}
+
+// Predict revenue
+message PredictRequest {
+  Budget budget = 1;
+  map<string, string> options = 2;  // Additional prediction options
+}
+
+message PredictResponse {
+  double prediction = 1;
+  string currency = 2;
+  map<string, double> channel_contributions = 3;
+  google.protobuf.Struct metadata = 4;
+}
+
+// Stream optimization progress
+message StreamOptimizationRequest {
+  string scenario_name = 1;
+  int32 poll_interval_seconds = 2;  // How often to check for updates
+}
+
+message OptimizationUpdate {
+  string scenario_name = 1;
+  int32 current_trial = 2;
+  int32 total_trials = 3;
+  double best_value = 4;
+  map<string, double> best_budget = 5;
+  string status = 6;  // running, completed, failed
+  google.protobuf.Timestamp timestamp = 7;
+}
+
+// Health check
+message HealthCheckRequest {
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;
+  }
+  ServingStatus status = 1;
+  string message = 2;
+  google.protobuf.Timestamp timestamp = 3;
+}
+
+// =============================================================================
+// Service Definitions
+// =============================================================================
+
+// Main Budget Optimizer service
+service BudgetOptimizerService {
+  // Scenario Management
+  rpc CreateBudgetScenario(CreateBudgetScenarioRequest) returns (CreateBudgetScenarioResponse);
+  rpc ListBudgetScenarios(ListBudgetScenariosRequest) returns (ListBudgetScenariosResponse);
+  rpc GetBudgetScenario(GetBudgetScenarioRequest) returns (GetBudgetScenarioResponse);
+  rpc GetScenarioSettings(GetScenarioSettingsRequest) returns (GetScenarioSettingsResponse);
+  rpc GetBestTrial(GetBestTrialRequest) returns (GetBestTrialResponse);
+  rpc DeleteBudgetScenario(DeleteBudgetScenarioRequest) returns (DeleteBudgetScenarioResponse);
+  
+  // Prediction
+  rpc Predict(PredictRequest) returns (PredictResponse);
+  
+  // Streaming optimization updates
+  rpc StreamOptimization(StreamOptimizationRequest) returns (stream OptimizationUpdate);
+  
+  // Health check
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Model Management service (for advanced use cases)
+service ModelManagementService {
+  rpc ListModels(google.protobuf.Empty) returns (ListModelsResponse);
+  rpc GetModelInfo(GetModelInfoRequest) returns (GetModelInfoResponse);
+  rpc UpdateModel(UpdateModelRequest) returns (UpdateModelResponse);
+}
+
+// Model management messages
+message ModelInfo {
+  string model_id = 1;
+  string name = 2;
+  string version = 3;
+  string type = 4;
+  string description = 5;
+  repeated string supported_kpis = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp last_updated = 8;
+}
+
+message ListModelsResponse {
+  repeated ModelInfo models = 1;
+}
+
+message GetModelInfoRequest {
+  string model_id = 1;
+}
+
+message GetModelInfoResponse {
+  ModelInfo model = 1;
+  bool found = 2;
+  string error = 3;
+}
+
+message UpdateModelRequest {
+  string model_id = 1;
+  bytes model_data = 2;
+  map<string, string> metadata = 3;
+}
+
+message UpdateModelResponse {
+  bool success = 1;
+  string message = 2;
+  string error = 3;
+}
